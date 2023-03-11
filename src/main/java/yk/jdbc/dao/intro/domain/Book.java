@@ -1,9 +1,6 @@
 package yk.jdbc.dao.intro.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -12,58 +9,23 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private String title;
     private String isbn;
     private String publisher;
 
-    private Long authorId;
+    @Transient
+    private Author authorId;
+
     public Book() {
+
     }
 
-    public Book(String title, String isbn, String publisher, Long authorId) {
+    public Book(String title, String isbn, String publisher) {
         this.title = title;
         this.isbn = isbn;
         this.publisher = publisher;
-        this.authorId= authorId;
-    }
-
-    public Long getId() {
-        return Id;
-    }
-
-    public void setId(Long id) {
-        Id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getIsbn() {
-        return isbn;
-    }
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public String getPublisher() {
-        return publisher;
-    }
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
     }
 
     @Override
@@ -73,11 +35,51 @@ public class Book {
 
         Book book = (Book) o;
 
-        return Objects.equals(Id, book.Id);
+        return Objects.equals(id, book.id);
     }
 
     @Override
     public int hashCode() {
-        return Id != null ? Id.hashCode() : 0;
+        return id != null ? id.hashCode() : 0;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Author getAuthor() {
+        return authorId;
+    }
+
+    public void setAuthor(Author authorId) {
+        this.authorId = authorId;
     }
 }
