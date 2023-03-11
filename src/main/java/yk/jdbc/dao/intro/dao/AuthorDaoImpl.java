@@ -73,6 +73,93 @@ public class AuthorDaoImpl implements AuthorDao {
         return null;
     }
 
+    @Override
+    public Author saveNewAuthor(Author author) {
+        Connection connection = null;
+        ResultSet resultSet =null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("Insert INTO author(first_name,last_name) " +
+                    "values (?,?)");
+            ps.setString(1, author.getFirstName());
+            ps.setString(2, author.getLastName());
+            ps.execute();
+
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT LAST_INSERT_ID()");
+
+            if (resultSet.next()){
+                long savedId = resultSet.getLong(1);
+                return this.getById(savedId);
+            }
+            statement.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                closeAll(resultSet,ps,connection);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Author updateAuthor(Author author) {
+
+        Connection connection = null;
+        ResultSet resultSet =null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("UPDATE author set first_name = ?, last_name = ? WHERE author.id = ?");
+            ps.setString(1, author.getFirstName());
+            ps.setString(2, author.getLastName());
+            ps.setLong(3,author.getId());
+            ps.execute();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                closeAll(resultSet,ps,connection);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+
+        return this.getById(author.getId());
+    }
+
+    @Override
+    public void deleteAuthorById(long id) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("Delete from author Where id = ?");
+            ps.setLong(1, id);
+            ps.execute();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                closeAll(null,ps,connection);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     private Author getAuthorFromRS(ResultSet resultSet) throws SQLException {
         Author author = new Author();
